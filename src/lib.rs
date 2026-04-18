@@ -7,7 +7,7 @@ pub fn App() -> impl IntoView {
     view! {
         <main style="min-height: 100vh; display: grid; place-items: center; font-family: Arial, sans-serif; background: #f8fafc;">
             <section style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 520px; width: 100%;">
-                <h1 style="margin: 0 0 12px 0; font-size: 2rem;">"SMC Dashboard"</h1>
+                <h1 style="margin: 0 0 12px 0; font-size: 2rem;">"SMC Health Monitoring Dashboard"</h1>
                 <p style="margin: 0 0 16px 0; color: #475569;">
                     "Your first Leptos app is running."
                 </p>
