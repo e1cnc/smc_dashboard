@@ -1,0 +1,10 @@
+C:\MyFiles\smc_dashboard\target\wasm32-unknown-unknown\debug\deps\idna-9202fcb41e9e9950.d: C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\lib.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\deprecated.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\punycode.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\uts46.rs
+
+C:\MyFiles\smc_dashboard\target\wasm32-unknown-unknown\debug\deps\libidna-9202fcb41e9e9950.rlib: C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\lib.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\deprecated.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\punycode.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\uts46.rs
+
+C:\MyFiles\smc_dashboard\target\wasm32-unknown-unknown\debug\deps\libidna-9202fcb41e9e9950.rmeta: C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\lib.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\deprecated.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\punycode.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\uts46.rs
+
+C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\lib.rs:
+C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\deprecated.rs:
+C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\punycode.rs:
+C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\idna-1.1.0\src\uts46.rs:

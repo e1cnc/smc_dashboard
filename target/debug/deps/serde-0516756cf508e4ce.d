@@ -1,0 +1,14 @@
+C:\MyFiles\smc_dashboard\target\debug\deps\serde-0516756cf508e4ce.d: C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs C:\MyFiles\smc_dashboard\target\debug\build\serde-5d2cf6b3cbd998c5\out/private.rs
+
+C:\MyFiles\smc_dashboard\target\debug\deps\libserde-0516756cf508e4ce.rlib: C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs C:\MyFiles\smc_dashboard\target\debug\build\serde-5d2cf6b3cbd998c5\out/private.rs
+
+C:\MyFiles\smc_dashboard\target\debug\deps\libserde-0516756cf508e4ce.rmeta: C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs C:\MyFiles\smc_dashboard\target\debug\build\serde-5d2cf6b3cbd998c5\out/private.rs
+
+C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs:
+C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs:
+C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs:
+C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs:
+C:\Users\Mortha\ Naveen\ Kumar\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs:
+C:\MyFiles\smc_dashboard\target\debug\build\serde-5d2cf6b3cbd998c5\out/private.rs:
+
+# env-dep:OUT_DIR=C:\\MyFiles\\smc_dashboard\\target\\debug\\build\\serde-5d2cf6b3cbd998c5\\out
