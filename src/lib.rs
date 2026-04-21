@@ -1,24 +1,74 @@
 use leptos::prelude::*;
+use gloo_net::http::Request;
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (count, set_count) = signal(0);
+    let (files, set_files) = signal(Vec::<String>::new());
+    let (loading, set_loading) = signal(false);
+    let (error, set_error) = signal(None::<String>);
+
+    let load_files = move |_| {
+        set_loading.set(true);
+        set_error.set(None);
+
+        spawn_local(async move {
+            let result = Request::get("http://localhost:3000/list")
+                .header("x-api-key", "my-secret-123")
+                .send()
+                .await;
+
+            match result {
+                Ok(resp) => {
+                    let json = resp.json::<Vec<String>>().await;
+                    match json {
+                        Ok(list) => {
+                            set_files.set(list);
+                            set_loading.set(false);
+                        }
+                        Err(e) => {
+                            set_error.set(Some(format!("JSON error: {e}")));
+                            set_loading.set(false);
+                        }
+                    }
+                }
+                Err(e) => {
+                    set_error.set(Some(format!("Request error: {e}")));
+                    set_loading.set(false);
+                }
+            }
+        });
+    };
 
     view! {
-        <main style="min-height: 100vh; display: grid; place-items: center; font-family: Arial, sans-serif; background: #f8fafc;">
-            <section style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 520px; width: 100%;">
-                <h1 style="margin: 0 0 12px 0; font-size: 2rem;">"SMC Health Monitoring Dashboard"</h1>
-                <p style="margin: 0 0 16px 0; color: #475569;">
-                    "Your first Leptos app is running."
-                </p>
+        <main style="padding: 24px; font-family: Arial, sans-serif;">
+            <h1>"SMC Dashboard"</h1>
 
-                <button
-                    on:click=move |_| set_count.update(|n| *n += 1)
-                    style="border: none; background: #2563eb; color: white; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-weight: 700;"
-                >
-                    "Clicked " {move || count.get()} " times"
-                </button>
-            </section>
+            <button
+                on:click=load_files
+                style="padding: 10px 16px; border: none; border-radius: 8px; background: #2563eb; color: white; cursor: pointer;"
+            >
+                "Load files"
+            </button>
+
+            <Show when=move || loading.get() fallback=|| view! {}>
+                <p>"Loading..."</p>
+            </Show>
+
+            <Show when=move || error.get().is_some() fallback=|| view! {}>
+                <p style="color: red;">
+                    {move || error.get().unwrap_or_default()}
+                </p>
+            </Show>
+
+            <ul>
+                {move || {
+                    files
+                        .get()
+                        .into_iter()
+                        .map(|file| view! { <li>{file}</li> })
+                        .collect_view()
+                }}
+            </ul>
         </main>
     }
 }
