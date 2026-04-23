@@ -1,5 +1,6 @@
-use leptos::prelude::*;
 use gloo_net::http::Request;
+use leptos::prelude::*;
+use leptos::task::spawn_local;
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -12,8 +13,7 @@ pub fn App() -> impl IntoView {
         set_error.set(None);
 
         spawn_local(async move {
-            let result = Request::get("http://localhost:3000/list")
-                .header("x-api-key", "my-secret-123")
+            let result = Request::get("http://157.151.167.19:3000/list")
                 .send()
                 .await;
 
