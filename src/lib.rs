@@ -13,7 +13,7 @@ pub fn App() -> impl IntoView {
         set_error.set(None);
 
         spawn_local(async move {
-                        let result = Request::get("https://api.jdecnc.cloud:3000/list")
+                        let result = Request::get("https://api.jdecnc.cloud/list")
     .send()
     .await;
 
