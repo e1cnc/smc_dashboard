@@ -13,9 +13,9 @@ pub fn App() -> impl IntoView {
         set_error.set(None);
 
         spawn_local(async move {
-            let result = Request::get("http://157.151.167.19:3000/list")
-                .send()
-                .await;
+                        let result = Request::get("https://api.jdecnc.cloud:3000/list")
+    .send()
+    .await;
 
             match result {
                 Ok(resp) => {
@@ -38,7 +38,7 @@ pub fn App() -> impl IntoView {
             }
         });
     };
-
+//body part
     view! {
         <main style="padding: 24px; font-family: Arial, sans-serif;">
             <h1>"SMC Dashboard"</h1>
