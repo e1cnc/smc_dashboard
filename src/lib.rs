@@ -1,135 +1,39 @@
 use gloo_net::http::Request;
 use leptos::prelude::*;
 use leptos::task::spawn_local;
-use serde_json::Value;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
-#[derive(Clone, PartialEq)]
-enum EnvStatus {
-    Healthy,
-    Issue,
-    PersistentIssue,
+use serde::Deserialize;
+
+#[derive(Clone, Debug, PartialEq, Deserialize)]
+struct SummaryItem {
+    customer: String,
+    env: String,
+    status: String,
 }
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (files, set_files) = signal(Vec::<String>::new());
-    let (status_map, set_status_map) = signal(HashMap::<String, EnvStatus>::new());
+    let (data, set_data) = signal(Vec::<SummaryItem>::new());
     let (loading, set_loading) = signal(false);
     let (error, set_error) = signal(None::<String>);
 
-    let load_files = move |_| {
+    let load_data = move |_| {
         set_loading.set(true);
         set_error.set(None);
 
         spawn_local(async move {
-            let result = Request::get("https://api.jdecnc.cloud/list")
+            let result = Request::get("https://api.jdecnc.cloud/summary")
                 .send()
                 .await;
 
             match result {
                 Ok(resp) => {
-                    let json = resp.json::<Vec<String>>().await;
+                    let json = resp.json::<Vec<SummaryItem>>().await;
 
                     match json {
                         Ok(list) => {
-                            set_files.set(list.clone());
-
-                            let mut status_map_local = HashMap::new();
-
-                            for file in list.iter() {
-                                if file.contains("_latest.json") {
-                                    let latest_url =
-                                        format!("https://api.jdecnc.cloud/file/{}", file);
-
-                                    let mut latest_ok = true;
-
-                                    if let Ok(resp) = Request::get(&latest_url).send().await {
-                                        if let Ok(data) = resp.json::<Vec<Value>>().await {
-                                            for item in data.iter() {
-                                                let instance_status = item
-                                                    .get("instance_status")
-                                                    .and_then(|v| v.as_str())
-                                                    .unwrap_or("");
-
-                                                let health_status = item
-                                                    .get("health_status")
-                                                    .and_then(|v| v.as_str())
-                                                    .unwrap_or("");
-
-                                                if instance_status != "RUNNING"
-                                                    || health_status != "passed"
-                                                {
-                                                    latest_ok = false;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    let mut history_ok = true;
-
-                                    let parts: Vec<&str> = file.split('_').collect();
-                                    if parts.len() >= 2 {
-                                        let prefix = format!("{}_{}", parts[0], parts[1]);
-
-                                        let mut history_files: Vec<&String> = list
-                                            .iter()
-                                            .filter(|f| {
-                                                f.starts_with(&prefix)
-                                                    && f.contains("_health.json")
-                                            })
-                                            .collect();
-
-                                        history_files.sort();
-                                        history_files.reverse();
-//history
-                                        for hist in history_files.iter().take(2) {
-                                            let url = format!(
-                                                "https://api.jdecnc.cloud/file/{}",
-                                                hist
-                                            );
-
-                                            if let Ok(resp) = Request::get(&url).send().await {
-                                                if let Ok(data) =
-                                                    resp.json::<Vec<Value>>().await
-                                                {
-                                                    for item in data.iter() {
-                                                        let instance_status = item
-                                                            .get("instance_status")
-                                                            .and_then(|v| v.as_str())
-                                                            .unwrap_or("");
-
-                                                        let health_status = item
-                                                            .get("health_status")
-                                                            .and_then(|v| v.as_str())
-                                                            .unwrap_or("");
-
-                                                        if instance_status != "RUNNING"
-                                                            || health_status != "passed"
-                                                        {
-                                                            history_ok = false;
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    let status = if latest_ok {
-                                        EnvStatus::Healthy
-                                    } else if history_ok {
-                                        EnvStatus::Issue
-                                    } else {
-                                        EnvStatus::PersistentIssue
-                                    };
-
-                                    status_map_local.insert(file.clone(), status);
-                                }
-                            }
-
-                            set_status_map.set(status_map_local);
+                            set_data.set(list);
                             set_loading.set(false);
                         }
                         Err(e) => {
@@ -147,10 +51,23 @@ pub fn App() -> impl IntoView {
     };
 
     view! {
-        <main style="padding: 24px; font-family: Arial;">
+        <main style="padding: 24px; font-family: Arial; background:#f5f7fa;">
             <h1>"SMC Dashboard"</h1>
 
-            <button on:click=load_files>"Load files"</button>
+            <button
+                on:click=load_data
+                style="
+                    padding: 10px 16px;
+                    border-radius: 6px;
+                    border: none;
+                    background: #2563eb;
+                    color: white;
+                    cursor: pointer;
+                    margin-bottom: 16px;
+                "
+            >
+                "Load Dashboard"
+            </button>
 
             <Show when=move || loading.get() fallback=|| view! {} >
                 <p>"Loading..."</p>
@@ -163,49 +80,61 @@ pub fn App() -> impl IntoView {
             </Show>
 
             {move || {
-                let mut grouped: HashMap<String, HashSet<String>> = HashMap::new();
+                let mut grouped: HashMap<String, Vec<SummaryItem>> = HashMap::new();
 
-                for file in files.get() {
-                    let parts: Vec<&str> = file.split('_').collect();
-
-                    if parts.len() >= 2 {
-                        grouped.entry(parts[0].to_string())
-                            .or_default()
-                            .insert(parts[1].to_string());
-                    }
+                for item in data.get() {
+                    grouped.entry(item.customer.clone())
+                        .or_default()
+                        .push(item);
                 }
 
                 view! {
-                    <div style="margin-top:20px;">
-                        {grouped.into_iter().map(|(customer, envs)| {
+                    <div style="
+                        display:grid;
+                        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                        gap:16px;
+                    ">
 
-                            let customer_name = customer.clone();
-                            let mut env_list: Vec<String> = envs.into_iter().collect();
-                            env_list.sort();
+                        {grouped.into_iter().map(|(customer, items)| {
+
+                            let mut envs = items.clone();
+                            envs.sort_by(|a, b| a.env.cmp(&b.env));
 
                             view! {
-                                <div style="margin-bottom:15px; border:1px solid #ddd; padding:10px;">
-                                    <h3>{customer}</h3>
+                                <div style="
+                                    background:white;
+                                    padding:16px;
+                                    border-radius:10px;
+                                    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+                                ">
+                                    <h3 style="margin-bottom:10px;">{customer}</h3>
 
-                                    <ul>
-                                        {env_list.into_iter().map(move |env| {
+                                    <ul style="list-style:none; padding:0;">
+                                        {envs.into_iter().map(|item| {
 
-                                            let key = format!("{}_{}_latest.json", customer_name, env);
-
-                                            let status = status_map.get().get(&key).cloned();
-
-                                            let (label, color) = match status {
-                                                Some(EnvStatus::Healthy) => ("Healthy", "green"),
-                                                Some(EnvStatus::Issue) => ("New Issue", "orange"),
-                                                Some(EnvStatus::PersistentIssue) => ("Persistent", "red"),
-                                                None => ("Loading", "gray"),
+                                            let (label, color) = match item.status.as_str() {
+                                                "Healthy" => ("Healthy", "#16a34a"),
+                                                "Issue" => ("New Issue", "#f59e0b"),
+                                                "Persistent" => ("Persistent", "#dc2626"),
+                                                _ => ("Unknown", "gray"),
                                             };
 
                                             view! {
-                                                <li>
-                                                    {env}
-                                                    " → "
-                                                    <span style=format!("color:{};", color)>
+                                                <li style="
+                                                    display:flex;
+                                                    justify-content:space-between;
+                                                    padding:6px 0;
+                                                ">
+                                                    <span>{item.env}</span>
+
+                                                    <span style=format!(
+                                                        "padding:4px 8px;
+                                                         border-radius:6px;
+                                                         color:white;
+                                                         font-size:12px;
+                                                         background:{};",
+                                                        color
+                                                    )>
                                                         {label}
                                                     </span>
                                                 </li>
@@ -215,6 +144,7 @@ pub fn App() -> impl IntoView {
                                 </div>
                             }
                         }).collect_view()}
+
                     </div>
                 }
             }}
