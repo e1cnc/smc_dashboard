@@ -6,8 +6,8 @@
   <title>SMC Health Monitoring Dashboard</title>
   
 <script type="module">
-import init, * as bindings from '/smc_dashboard/smc_dashboard-93244e0d6ad17d2e.js';
-const wasm = await init({ module_or_path: '/smc_dashboard/smc_dashboard-93244e0d6ad17d2e_bg.wasm' });
+import init, * as bindings from '/smc_dashboard/smc_dashboard-f1b97f0995b9edfa.js';
+const wasm = await init({ module_or_path: '/smc_dashboard/smc_dashboard-f1b97f0995b9edfa_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -16,6 +16,6 @@ window.wasmBindings = bindings;
 dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
 </script>
-<link rel="modulepreload" href="/smc_dashboard/smc_dashboard-93244e0d6ad17d2e.js" crossorigin="anonymous" integrity="sha384-5uAQk+AIgw4xNN8QTejzF1cWx2CJfmF6ICGxJZb0puihvYzMHiqncSZAa4DrrxxT"><link rel="preload" href="/smc_dashboard/smc_dashboard-93244e0d6ad17d2e_bg.wasm" crossorigin="anonymous" integrity="sha384-DjFg3FYhmqy+UPfFJSeqT8l6Cy2GeBNgSm2pey8WbfXGD1hCgOESn8EFatig+Ja/" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="/smc_dashboard/smc_dashboard-f1b97f0995b9edfa.js" crossorigin="anonymous" integrity="sha384-pT/HzoUb3qpUTzIZ3qMQ6vuvy/gIVJOf1X5iEsJrM96MHaq8J1ons2iBC25q4VsC"><link rel="preload" href="/smc_dashboard/smc_dashboard-f1b97f0995b9edfa_bg.wasm" crossorigin="anonymous" integrity="sha384-usBmN+liUMx07J5ooPAhKrM+6wMOuyU0r0OXd2PgCUMzVb3vlucIacEx+lCloRWF" as="fetch" type="application/wasm"></head>
 <body></body>
 </html>
