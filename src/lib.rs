@@ -1,6 +1,7 @@
 use gloo_net::http::Request;
 use leptos::prelude::*;
 use leptos::task::spawn_local;
+use std::collections::HashMap;
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -13,9 +14,9 @@ pub fn App() -> impl IntoView {
         set_error.set(None);
 
         spawn_local(async move {
-                        let result = Request::get("https://api.jdecnc.cloud/list")
-    .send()
-    .await;
+            let result = Request::get("https://api.jdecnc.cloud/list")
+                .send()
+                .await;
 
             match result {
                 Ok(resp) => {
@@ -38,37 +39,61 @@ pub fn App() -> impl IntoView {
             }
         });
     };
-//body part
+
     view! {
-        <main style="padding: 24px; font-family: Arial, sans-serif;">
+        <main style="padding: 24px; font-family: Arial;">
             <h1>"SMC Dashboard"</h1>
 
-            <button
-                on:click=load_files
-                style="padding: 10px 16px; border: none; border-radius: 8px; background: #2563eb; color: white; cursor: pointer;"
-            >
+            <button on:click=load_files>
                 "Load files"
             </button>
 
-            <Show when=move || loading.get() fallback=|| view! {}>
+            <Show when=move || loading.get() fallback=|| view! {} >
                 <p>"Loading..."</p>
             </Show>
 
-            <Show when=move || error.get().is_some() fallback=|| view! {}>
-                <p style="color: red;">
+            <Show when=move || error.get().is_some() fallback=|| view! {} >
+                <p style="color:red;">
                     {move || error.get().unwrap_or_default()}
                 </p>
             </Show>
 
-            <ul>
-                {move || {
-                    files
-                        .get()
-                        .into_iter()
-                        .map(|file| view! { <li>{file}</li> })
-                        .collect_view()
-                }}
-            </ul>
+            {move || {
+                let mut grouped: HashMap<String, Vec<String>> = HashMap::new();
+
+                for file in files.get() {
+                    let parts: Vec<&str> = file.split('_').collect();
+
+                    if parts.len() >= 2 {
+                        let customer = parts[0].to_string();
+                        let env = parts[1].to_string();
+
+                        grouped.entry(customer).or_default().push(env);
+                    }
+                }
+
+                view! {
+                    <div style="margin-top:20px;">
+                        {grouped.into_iter().map(|(customer, envs)| {
+                            view! {
+                                <div style="margin-bottom:15px; border:1px solid #ddd; padding:10px;">
+                                    <h3>{customer}</h3>
+
+                                    <ul>
+                                        {envs.into_iter().map(|env| {
+                                            view! {
+                                                <li>
+                                                    {env}
+                                                </li>
+                                            }
+                                        }).collect_view()}
+                                    </ul>
+                                </div>
+                            }
+                        }).collect_view()}
+                    </div>
+                }
+            }}
         </main>
     }
 }
