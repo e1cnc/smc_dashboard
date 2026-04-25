@@ -1,11 +1,13 @@
 use gloo_net::http::Request;
 use leptos::prelude::*;
 use leptos::task::spawn_local;
+use serde_json::Value;
 use std::collections::{HashMap, HashSet};
 
 #[component]
 pub fn App() -> impl IntoView {
     let (files, set_files) = signal(Vec::<String>::new());
+    let (status_map, set_status_map) = signal(HashMap::<String, bool>::new());
     let (loading, set_loading) = signal(false);
     let (error, set_error) = signal(None::<String>);
 
@@ -21,9 +23,50 @@ pub fn App() -> impl IntoView {
             match result {
                 Ok(resp) => {
                     let json = resp.json::<Vec<String>>().await;
+
                     match json {
                         Ok(list) => {
-                            set_files.set(list);
+                            set_files.set(list.clone());
+
+                            let mut status_map_local = HashMap::new();
+
+                            for file in list.iter() {
+                                if file.contains("_latest.json") {
+                                    let url = format!(
+                                        "https://api.jdecnc.cloud/file/{}",
+                                        file
+                                    );
+
+                                    if let Ok(resp) = Request::get(&url).send().await {
+                                        if let Ok(data) = resp.json::<Vec<Value>>().await {
+                                            let mut all_ok = true;
+
+                                            for item in data.iter() {
+                                                let instance_status = item
+                                                    .get("instance_status")
+                                                    .and_then(|v| v.as_str())
+                                                    .unwrap_or("");
+
+                                                let health_status = item
+                                                    .get("health_status")
+                                                    .and_then(|v| v.as_str())
+                                                    .unwrap_or("");
+
+                                                if instance_status != "RUNNING"
+                                                    || health_status != "passed"
+                                                {
+                                                    all_ok = false;
+                                                    break;
+                                                }
+                                            }
+
+                                            status_map_local.insert(file.clone(), all_ok);
+                                        }
+                                    }
+                                }
+                            }
+
+                            set_status_map.set(status_map_local);
                             set_loading.set(false);
                         }
                         Err(e) => {
@@ -41,12 +84,12 @@ pub fn App() -> impl IntoView {
     };
 
     view! {
-        <main style="padding: 24px; font-family: Arial, sans-serif;">
+        <main style="padding: 24px; font-family: Arial;">
             <h1>"SMC Dashboard"</h1>
 
             <button
                 on:click=load_files
-                style="padding: 10px 16px; border: none; border-radius: 8px; background: #2563eb; color: white; cursor: pointer;"
+                style="padding: 10px 16px; border-radius: 6px; cursor: pointer;"
             >
                 "Load files"
             </button>
@@ -79,17 +122,37 @@ pub fn App() -> impl IntoView {
                     <div style="margin-top:20px;">
                         {grouped.into_iter().map(|(customer, envs)| {
 
+                            let customer_name = customer.clone();
+
                             let mut env_list: Vec<String> = envs.into_iter().collect();
                             env_list.sort();
 
                             view! {
                                 <div style="margin-bottom:15px; border:1px solid #ddd; padding:10px; border-radius:8px;">
-                                    <h3 style="margin-bottom:8px;">{customer}</h3>
+                                    <h3>{customer}</h3>
 
                                     <ul>
-                                        {env_list.into_iter().map(|env| {
+                                        {env_list.into_iter().map(move |env| {
+
+                                            let key = format!("{}_{}_latest.json", customer_name, env);
+
+                                            let status = status_map
+                                                .get()
+                                                .get(&key)
+                                                .cloned()
+                                                .unwrap_or(false);
+
                                             view! {
-                                                <li>{env}</li>
+                                                <li>
+                                                    {env}
+                                                    " → "
+                                                    <span style=format!(
+                                                        "color:{}; font-weight:bold;",
+                                                        if status { "green" } else { "red" }
+                                                    )>
+                                                        {if status { "Healthy" } else { "Issues" }}
+                                                    </span>
+                                                </li>
                                             }
                                         }).collect_view()}
                                     </ul>
