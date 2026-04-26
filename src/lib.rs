@@ -26,7 +26,8 @@ pub fn App() -> impl IntoView {
     let (loading, set_loading) = signal(true);
     let (expanded, set_expanded) = signal(None::<(String, String)>);
 
-    let load_data = move || {
+    // 🔧 Fetch logic
+    let fetch_data = move || {
         spawn_local(async move {
             let result = Request::get("https://api.jdecnc.cloud/summary")
                 .send()
@@ -42,16 +43,14 @@ pub fn App() -> impl IntoView {
         });
     };
 
-    // Auto refresh
-    {
-        let load_data_clone = load_data.clone();
-        Effect::new(move |_| {
-            load_data_clone();
-            Interval::new(30000, move || {
-                load_data_clone();
-            });
+    // ✅ FIXED Auto refresh (NO on_cleanup, NO Send issues)
+    Effect::new(move |_| {
+        fetch_data();
+
+        Interval::new(300_000, move || {
+            fetch_data();
         });
-    }
+    });
 
     view! {
         <main style="padding: 24px; font-family: Arial; background:#f5f7fa;">
@@ -62,6 +61,11 @@ pub fn App() -> impl IntoView {
             </Show>
 
             {move || {
+                let total = data.get().len();
+                let healthy = data.get().iter().filter(|i| i.status == "Healthy").count();
+                let issue = data.get().iter().filter(|i| i.status == "Issue").count();
+                let persistent = data.get().iter().filter(|i| i.status == "Persistent").count();
+
                 let mut grouped: HashMap<String, Vec<SummaryItem>> = HashMap::new();
 
                 for item in data.get() {
@@ -70,76 +74,75 @@ pub fn App() -> impl IntoView {
                         .push(item);
                 }
 
+                let mut grouped_vec: Vec<(String, Vec<SummaryItem>)> =
+                    grouped.into_iter().collect();
+
+                grouped_vec.sort_by(|a, b| {
+                    let score = |items: &Vec<SummaryItem>| {
+                        items.iter().filter(|i| i.status != "Healthy").count()
+                    };
+                    score(&b.1).cmp(&score(&a.1))
+                });
+
                 view! {
+
+                    // 📊 Summary bar
+                    <div style="margin-bottom:20px; font-weight:bold;">
+                        <span>"Total: " {total} " "</span>
+                        <span style="color:green;">"Healthy: " {healthy} " "</span>
+                        <span style="color:orange;">"Issues: " {issue} " "</span>
+                        <span style="color:red;">"Persistent: " {persistent}</span>
+                    </div>
+
                     <div style="
                         display:grid;
                         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
                         gap:20px;
                     ">
 
-                        {grouped.into_iter().map(|(customer, items)| {
+                        {grouped_vec.into_iter().map(|(customer, items)| {
 
                             let mut envs = items.clone();
                             envs.sort_by(|a, b| a.env.cmp(&b.env));
 
                             view! {
-                                <div style="
-                                    background:white;
-                                    padding:16px;
-                                    border-radius:10px;
-                                    box-shadow:0 2px 6px rgba(0,0,0,0.1);
-                                ">
+                                <div style="background:white; padding:16px; border-radius:10px;">
                                     <h3>{customer}</h3>
 
                                     <ul style="list-style:none; padding:0;">
                                         {envs.into_iter().map(|item| {
 
-                                            // 🔥 FIX: clone key once and reuse safely
                                             let key = (item.customer.clone(), item.env.clone());
-                                            let key_for_click = key.clone();
-                                            let key_for_show = key.clone();
-
-                                            let is_expanded = expanded.get() == Some(key.clone());
+                                            let key_click = key.clone();
+                                            let key_show = key.clone();
 
                                             let (label, color) = match item.status.as_str() {
-                                                "Healthy" => ("Healthy", "#16a34a"),
-                                                "Issue" => ("Issue", "#f59e0b"),
-                                                "Persistent" => ("Persistent", "#dc2626"),
+                                                "Healthy" => ("Healthy", "green"),
+                                                "Issue" => ("Issue", "orange"),
+                                                "Persistent" => ("Persistent", "red"),
                                                 _ => ("Unknown", "gray"),
                                             };
 
                                             view! {
                                                 <li style="margin-bottom:8px;">
                                                     <div
-                                                        style="
-                                                            display:flex;
-                                                            justify-content:space-between;
-                                                            cursor:pointer;
-                                                        "
+                                                        style="display:flex; justify-content:space-between; cursor:pointer;"
                                                         on:click=move |_| {
-                                                            if expanded.get() == Some(key_for_click.clone()) {
+                                                            if expanded.get() == Some(key_click.clone()) {
                                                                 set_expanded.set(None);
                                                             } else {
-                                                                set_expanded.set(Some(key_for_click.clone()));
+                                                                set_expanded.set(Some(key_click.clone()));
                                                             }
                                                         }
                                                     >
                                                         <span>{item.env.clone()}</span>
-
-                                                        <span style=format!(
-                                                            "padding:4px 8px;
-                                                             border-radius:6px;
-                                                             color:white;
-                                                             font-size:12px;
-                                                             background:{};",
-                                                            color
-                                                        )>
+                                                        <span style=format!("color:{};", color)>
                                                             {label}
                                                         </span>
                                                     </div>
 
                                                     <Show
-                                                        when=move || expanded.get() == Some(key_for_show.clone())
+                                                        when=move || expanded.get() == Some(key_show.clone())
                                                         fallback=|| view! {}
                                                     >
                                                         <DetailsPanel
@@ -180,13 +183,7 @@ fn DetailsPanel(customer: String, env: String) -> impl IntoView {
     });
 
     view! {
-        <div style="
-            margin-top:6px;
-            padding:6px;
-            background:#f9fafb;
-            border-radius:6px;
-            font-size:12px;
-        ">
+        <div style="margin-top:6px; padding:6px; background:#f9fafb;">
             <Show when=move || loading.get() fallback=|| view! {} >
                 <p>"Loading details..."</p>
             </Show>

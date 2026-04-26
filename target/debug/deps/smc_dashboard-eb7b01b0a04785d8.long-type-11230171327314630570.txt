@@ -1,0 +1,1 @@
+std::option::Option<leptos::wasm_bindgen::prelude::ScopedClosure<'static, (dyn std::ops::FnMut() + 'static)>>
