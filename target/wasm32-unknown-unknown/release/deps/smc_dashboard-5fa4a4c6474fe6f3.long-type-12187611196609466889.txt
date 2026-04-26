@@ -1,0 +1,2 @@
+leptos::html::HtmlElement<Button, (leptos::tachys::html::style::Style<&str>,), (&str,)>
+leptos::prelude::OnAttribute<click, {closure@src\lib.rs:22:21: 22:29}>

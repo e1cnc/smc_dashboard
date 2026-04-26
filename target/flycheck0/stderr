@@ -1,16 +1,114 @@
-   1.326542500s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint: stale: changed "C:\\MyFiles\\smc_dashboard\\src\\lib.rs"
-   1.328550600s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint:           (vs) "C:\\MyFiles\\smc_dashboard\\target\\debug\\.fingerprint\\smc_dashboard-09fb31adac83b5b6\\dep-lib-smc_dashboard"
-   1.328559000s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint:                FileTime { seconds: 13421606623, nanos: 842100600 } < FileTime { seconds: 13421606646, nanos: 384122100 }
-   1.331582400s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint: fingerprint dirty for smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("smc_dashboard", ["lib"], "C:\\MyFiles\\smc_dashboard\\src\\lib.rs", Edition2024) }
-   1.333087800s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleItem(ChangedFile { reference: "C:\\MyFiles\\smc_dashboard\\target\\debug\\.fingerprint\\smc_dashboard-09fb31adac83b5b6\\dep-lib-smc_dashboard", reference_mtime: FileTime { seconds: 13421606623, nanos: 842100600 }, stale: "C:\\MyFiles\\smc_dashboard\\src\\lib.rs", stale_mtime: FileTime { seconds: 13421606646, nanos: 384122100 } }))
-   1.448752700s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint: stale: changed "C:\\MyFiles\\smc_dashboard\\src\\lib.rs"
-   1.448779400s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint:           (vs) "C:\\MyFiles\\smc_dashboard\\target\\debug\\.fingerprint\\smc_dashboard-3ee1ebc7777b1c15\\dep-test-lib-smc_dashboard"
-   1.448785500s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint:                FileTime { seconds: 13421606623, nanos: 842100600 } < FileTime { seconds: 13421606646, nanos: 384122100 }
-   1.449691400s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint: fingerprint dirty for smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("smc_dashboard", ["lib"], "C:\\MyFiles\\smc_dashboard\\src\\lib.rs", Edition2024) }
-   1.449719600s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleItem(ChangedFile { reference: "C:\\MyFiles\\smc_dashboard\\target\\debug\\.fingerprint\\smc_dashboard-3ee1ebc7777b1c15\\dep-test-lib-smc_dashboard", reference_mtime: FileTime { seconds: 13421606623, nanos: 842100600 }, stale: "C:\\MyFiles\\smc_dashboard\\src\\lib.rs", stale_mtime: FileTime { seconds: 13421606646, nanos: 384122100 } }))
-   1.456309300s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint: fingerprint dirty for smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard)/Check { test: false }/TargetInner { name: "smc_dashboard", doc: true, ..: with_path("C:\\MyFiles\\smc_dashboard\\src\\main.rs", Edition2024) }
-   1.456344100s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleDepFingerprint { name: "smc_dashboard" })
-   1.459640100s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint: fingerprint dirty for smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard)/Check { test: true }/TargetInner { name: "smc_dashboard", doc: true, ..: with_path("C:\\MyFiles\\smc_dashboard\\src\\main.rs", Edition2024) }
-   1.459676300s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleDepFingerprint { name: "smc_dashboard" })
+   1.296656900s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint: fingerprint error for smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("smc_dashboard", ["lib"], "C:\\MyFiles\\smc_dashboard\\src\\lib.rs", Edition2024) }
+   1.296791900s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\MyFiles\smc_dashboard\target\debug\.fingerprint\smc_dashboard-eb7b01b0a04785d8\lib-smc_dashboard`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   1.626082700s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint: fingerprint error for smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("smc_dashboard", ["lib"], "C:\\MyFiles\\smc_dashboard\\src\\lib.rs", Edition2024) }
+   1.626161700s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\MyFiles\smc_dashboard\target\debug\.fingerprint\smc_dashboard-fe8e72c6ccfa31e5\test-lib-smc_dashboard`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   1.673776500s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint: fingerprint error for smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard)/Check { test: false }/TargetInner { name: "smc_dashboard", doc: true, ..: with_path("C:\\MyFiles\\smc_dashboard\\src\\main.rs", Edition2024) }
+   1.673822000s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\MyFiles\smc_dashboard\target\debug\.fingerprint\smc_dashboard-3423fa5715b7cfbc\bin-smc_dashboard`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   1.676664500s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint: fingerprint error for smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard)/Check { test: true }/TargetInner { name: "smc_dashboard", doc: true, ..: with_path("C:\\MyFiles\\smc_dashboard\\src\\main.rs", Edition2024) }
+   1.676729800s  INFO prepare_target{force=false package_id=smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard) target="smc_dashboard"}: cargo::core::compiler::fingerprint:     err: failed to read `C:\MyFiles\smc_dashboard\target\debug\.fingerprint\smc_dashboard-1f66abaef76711a1\test-bin-smc_dashboard`
+
+Caused by:
+    The system cannot find the file specified. (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
     Checking smc_dashboard v0.1.0 (C:\MyFiles\smc_dashboard)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.46s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.10s

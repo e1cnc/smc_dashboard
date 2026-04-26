@@ -1,0 +1,1 @@
+leptos::prelude::View<leptos::prelude::View<leptos::html::HtmlElement<leptos::html::Div, (leptos::tachys::html::style::Style<&str>,), (&str,)>>>
