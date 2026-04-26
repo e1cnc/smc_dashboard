@@ -12,22 +12,19 @@ struct SummaryItem {
     status: String,
 }
 
-#[derive(Clone, Debug, Deserialize)]
-struct DetailItem {
-    instance_name: Option<String>,
-    instance_status: Option<String>,
-    health_status: Option<String>,
-    details: Option<String>,
-}
-
 #[component]
 pub fn App() -> impl IntoView {
     let (data, set_data) = signal(Vec::<SummaryItem>::new());
     let (loading, set_loading) = signal(true);
     let (expanded, set_expanded) = signal(None::<(String, String)>);
 
-    // 🔧 Fetch logic
+    // 🆕 timer state (seconds)
+    let (seconds_left, set_seconds_left) = signal(300);
+    let (last_updated, set_last_updated) = signal(String::from("Never"));
+
     let fetch_data = move || {
+        set_loading.set(true);
+
         spawn_local(async move {
             let result = Request::get("https://api.jdecnc.cloud/summary")
                 .send()
@@ -39,22 +36,54 @@ pub fn App() -> impl IntoView {
                 }
             }
 
+            // reset timer
+            set_seconds_left.set(300);
+
+            // update timestamp
+            let now = js_sys::Date::new_0();
+            let time_str = now.to_locale_time_string("en-GB");
+            set_last_updated.set(time_str.into());
+
             set_loading.set(false);
         });
     };
 
-    // ✅ FIXED Auto refresh (NO on_cleanup, NO Send issues)
-    Effect::new(move |_| {
-        fetch_data();
+    // 🔁 countdown + auto refresh
+    {
+        let fetch_clone = fetch_data.clone();
 
-        Interval::new(300_000, move || {
-            fetch_data();
+        Effect::new(move |_| {
+            fetch_clone();
+
+            Interval::new(1000, move || {
+                let current = seconds_left.get();
+
+                if current <= 1 {
+                    fetch_clone();
+                } else {
+                    set_seconds_left.set(current - 1);
+                }
+            });
         });
-    });
+    }
 
     view! {
         <main style="padding: 24px; font-family: Arial; background:#f5f7fa;">
             <h1>"SMC Dashboard"</h1>
+
+            // 🆕 status bar
+            <div style="margin-bottom:10px; font-size:14px;">
+                <b>"Last updated: "</b> {move || last_updated.get()}
+                " | Refresh in: "
+                <span style="color:#2563eb;">
+                    {move || seconds_left.get()}
+                </span>
+                " sec"
+            </div>
+
+            <button on:click=move |_| fetch_data()>
+                "Refresh Now"
+            </button>
 
             <Show when=move || loading.get() fallback=|| view! {} >
                 <p>"Loading dashboard..."</p>
@@ -77,6 +106,7 @@ pub fn App() -> impl IntoView {
                 let mut grouped_vec: Vec<(String, Vec<SummaryItem>)> =
                     grouped.into_iter().collect();
 
+                // 🔥 sort by severity
                 grouped_vec.sort_by(|a, b| {
                     let score = |items: &Vec<SummaryItem>| {
                         items.iter().filter(|i| i.status != "Healthy").count()
@@ -85,8 +115,6 @@ pub fn App() -> impl IntoView {
                 });
 
                 view! {
-
-                    // 📊 Summary bar
                     <div style="margin-bottom:20px; font-weight:bold;">
                         <span>"Total: " {total} " "</span>
                         <span style="color:green;">"Healthy: " {healthy} " "</span>
@@ -113,8 +141,6 @@ pub fn App() -> impl IntoView {
                                         {envs.into_iter().map(|item| {
 
                                             let key = (item.customer.clone(), item.env.clone());
-                                            let key_click = key.clone();
-                                            let key_show = key.clone();
 
                                             let (label, color) = match item.status.as_str() {
                                                 "Healthy" => ("Healthy", "green"),
@@ -124,32 +150,12 @@ pub fn App() -> impl IntoView {
                                             };
 
                                             view! {
-                                                <li style="margin-bottom:8px;">
-                                                    <div
-                                                        style="display:flex; justify-content:space-between; cursor:pointer;"
-                                                        on:click=move |_| {
-                                                            if expanded.get() == Some(key_click.clone()) {
-                                                                set_expanded.set(None);
-                                                            } else {
-                                                                set_expanded.set(Some(key_click.clone()));
-                                                            }
-                                                        }
-                                                    >
-                                                        <span>{item.env.clone()}</span>
-                                                        <span style=format!("color:{};", color)>
-                                                            {label}
-                                                        </span>
-                                                    </div>
-
-                                                    <Show
-                                                        when=move || expanded.get() == Some(key_show.clone())
-                                                        fallback=|| view! {}
-                                                    >
-                                                        <DetailsPanel
-                                                            customer=item.customer.clone()
-                                                            env=item.env.clone()
-                                                        />
-                                                    </Show>
+                                                <li style="margin-bottom:6px;">
+                                                    <span>{item.env}</span>
+                                                    " → "
+                                                    <span style=format!("color:{};", color)>
+                                                        {label}
+                                                    </span>
                                                 </li>
                                             }
                                         }).collect_view()}
@@ -162,45 +168,5 @@ pub fn App() -> impl IntoView {
                 }
             }}
         </main>
-    }
-}
-
-#[component]
-fn DetailsPanel(customer: String, env: String) -> impl IntoView {
-    let (details, set_details) = signal(Vec::<DetailItem>::new());
-    let (loading, set_loading) = signal(true);
-
-    spawn_local(async move {
-        let url = format!("https://api.jdecnc.cloud/details/{}/{}", customer, env);
-
-        if let Ok(resp) = Request::get(&url).send().await {
-            if let Ok(data) = resp.json::<Vec<DetailItem>>().await {
-                set_details.set(data);
-            }
-        }
-
-        set_loading.set(false);
-    });
-
-    view! {
-        <div style="margin-top:6px; padding:6px; background:#f9fafb;">
-            <Show when=move || loading.get() fallback=|| view! {} >
-                <p>"Loading details..."</p>
-            </Show>
-
-            <ul>
-                {move || details.get().into_iter().map(|d| {
-                    view! {
-                        <li>
-                            {d.instance_name.clone().unwrap_or("-".into())}
-                            " → "
-                            {d.instance_status.clone().unwrap_or("-".into())}
-                            " / "
-                            {d.health_status.clone().unwrap_or("-".into())}
-                        </li>
-                    }
-                }).collect_view()}
-            </ul>
-        </div>
     }
 }
