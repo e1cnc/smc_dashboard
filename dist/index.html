@@ -4,10 +4,36 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SMC Health Monitoring Dashboard</title>
+  <canvas id="chart" width="300" height="300"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+let chart;
+
+function updateChart(healthy, issue, persistent) {
+    const ctx = document.getElementById('chart').getContext('2d');
+
+    if (chart) {
+        chart.destroy();
+    }
+
+    chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Healthy', 'Issue', 'Persistent'],
+            datasets: [{
+                data: [healthy, issue, persistent],
+                backgroundColor: ['#16a34a', '#f59e0b', '#dc2626']
+            }]
+        }
+    });
+}
+</script>
   
 <script type="module">
-import init, * as bindings from '/smc_dashboard/smc_dashboard-b5fcb77e93c3da2d.js';
-const wasm = await init({ module_or_path: '/smc_dashboard/smc_dashboard-b5fcb77e93c3da2d_bg.wasm' });
+import init, * as bindings from '/smc_dashboard/smc_dashboard-f3a410dbcaf83b1b.js';
+const wasm = await init({ module_or_path: '/smc_dashboard/smc_dashboard-f3a410dbcaf83b1b_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -16,6 +42,6 @@ window.wasmBindings = bindings;
 dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
 
 </script>
-<link rel="modulepreload" href="/smc_dashboard/smc_dashboard-b5fcb77e93c3da2d.js" crossorigin="anonymous" integrity="sha384-XCMVAeQy6gju/npR+xmmx1TRkKjTGH9rci43U5fmKd2Ebr0g0dnTpX/7lYWtZwR8"><link rel="preload" href="/smc_dashboard/smc_dashboard-b5fcb77e93c3da2d_bg.wasm" crossorigin="anonymous" integrity="sha384-XVnhtahlNADh05VAlBUuNNvDSAOxoKpWbIQHGP64XyxajJyAx8qVxBP/7beAEdC2" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="/smc_dashboard/smc_dashboard-f3a410dbcaf83b1b.js" crossorigin="anonymous" integrity="sha384-dujEgbY4gxFy4PRtWlbZsacqsiHNSfh1mg2K+bhtBU7TSbGn2qdK7ePa9gfJUdqj"><link rel="preload" href="/smc_dashboard/smc_dashboard-f3a410dbcaf83b1b_bg.wasm" crossorigin="anonymous" integrity="sha384-NoJ8bXqiXwN+fOhZ4u9HQPpt1N3AovFPVDR4iOdHaXgAvmnOJKhArL0Q+Eg2Oaie" as="fetch" type="application/wasm"></head>
 <body></body>
 </html>

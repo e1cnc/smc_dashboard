@@ -16,12 +16,13 @@ console_error_panic_hook = "0.1"
 gloo-net = "0.7.0"
 gloo-timers = "0.4.0"
 js-sys = "0.3.95"
+web-sys = "0.3"
 
 [dev-dependencies]
 wasm-bindgen = "0.2"
 wasm-bindgen-test = "0.3"
 web-sys = { version = "0.3", features = ["Document", "Window"] }
-
+js-sys = "0.3"
 [profile.release]
 opt-level = 'z'
 lto = true

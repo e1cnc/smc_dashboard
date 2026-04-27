@@ -4,6 +4,32 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SMC Health Monitoring Dashboard</title>
+  <canvas id="chart" width="300" height="300"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+let chart;
+
+function updateChart(healthy, issue, persistent) {
+    const ctx = document.getElementById('chart').getContext('2d');
+
+    if (chart) {
+        chart.destroy();
+    }
+
+    chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Healthy', 'Issue', 'Persistent'],
+            datasets: [{
+                data: [healthy, issue, persistent],
+                backgroundColor: ['#16a34a', '#f59e0b', '#dc2626']
+            }]
+        }
+    });
+}
+</script>
   <link data-trunk rel="rust" data-wasm-opt="z" data-weak-refs />
 </head>
 <body></body>
